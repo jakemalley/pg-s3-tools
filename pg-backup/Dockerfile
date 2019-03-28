@@ -1,15 +1,10 @@
-FROM alpine:latest
-
-ENV PGHOST='localhost'
-ENV PGDATABASE='postgres'
-ENV PGUSER='postgres'
-ENV PGPASSWORD='password'
-
-ENV S3BUCKET='mybucket'
+FROM python:3.7-alpine
 
 RUN \
  apk update && \
- apk add --no-cache postgresql
+ apk add --no-cache postgresql && \
+ python3 -m pip install --upgrade pip --no-cache-dir  && \
+ python3 -m pip install s3cmd --no-cache-dir
 
 COPY backup-postgres-s3.sh .
 
