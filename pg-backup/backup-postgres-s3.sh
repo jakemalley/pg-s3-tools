@@ -31,6 +31,7 @@ fi
 DUMP_TIMESTAMP=`date +%Y%m%d_%H%M%S`
 DUMP_FILE_NAME="${DUMP_PREFIX}_${DUMP_TIMESTAMP}.pgdump"
 
+# Simple log function with the date.
 echo_log () {
     echo "`date`: $*"
 }
