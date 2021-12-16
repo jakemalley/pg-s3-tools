@@ -1,7 +1,7 @@
-FROM python:3.7-alpine
+FROM python:3.10-alpine
 
 RUN \
- apk update && \
+ apk update && apk upgrade && \
  apk add --no-cache postgresql && \
  python3 -m pip install --upgrade pip --no-cache-dir  && \
  python3 -m pip install s3cmd --no-cache-dir

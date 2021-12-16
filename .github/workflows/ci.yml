@@ -1,0 +1,46 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'development'
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: set outputs for short commit sha
+        id: commit_sha
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+      - name: build and export to docker
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          load: true
+          tags: '${{ github.repository }}:${{ steps.commit_sha.outputs.sha_short }}'
+
+  docker-push:
+    needs: docker-build
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: login to dockerhub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: '${{ github.repository }}:latest'
